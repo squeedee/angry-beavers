@@ -12,10 +12,9 @@ spec:
     #      type: string
     steps:
       - name: check-step
-        image: harbor-repo.vmware.com/dockerhub-proxy-cache/alpine
+        image: harbor-repo.vmware.com/dockerhub-proxy-cache/curlimages/curl:8.5.0
         script: |
           set -ex
-          apk add curl
           
           # curl will block until the service is working (i think)
           # so wait for it to find the server and get a response.

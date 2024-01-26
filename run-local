@@ -2,12 +2,12 @@
 
 
 curlit() {
-  echo "+$(date "+%H:%M:%S") Curl begins" | tee -a ./log.txt
+  echo "+ $(date "+%H:%M:%S") Curl begins\n" | tee -a ./log.txt
   until curl -sL localhost:8089/info 2>&1 >> ./log.txt; do
     sleep 1
-    printf "\n.$(date "+%H:%M:%S") Curl continues" | tee -a ./log.txt
+    printf ". $(date "+%H:%M:%S") Curl continues\n" | tee -a ./log.txt
   done
-  printf "\n-$(date "+%H:%M:%S") Curl done" | tee -a ./log.txt
+  printf -- "- $(date "+%H:%M:%S") Curl done\n" | tee -a ./log.txt
 }
 
 
