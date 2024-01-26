@@ -1,0 +1,21 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: check
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: check
+          image: harbor-repo.vmware.com/dockerhub-proxy-cache/curlimages/curl:8.5.0
+          command:
+            - sh
+            - -c
+            - |
+              until curl -sL http://control/info; do
+                echo "waiting for curl"
+                sleep 1
+              done
+  backoffLimit: 4

@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
-
 curlit() {
-  echo "+ $(date "+%H:%M:%S") Curl begins\n" | tee -a ./log.txt
+  echo "+$(date "+%H:%M:%S") Curl begins\n" | tee -a ./log.txt
   until curl -sL localhost:8089/info 2>&1 >> ./log.txt; do
     sleep 1
-    printf ". $(date "+%H:%M:%S") Curl continues\n" | tee -a ./log.txt
+    printf ".$(date "+%H:%M:%S") Curl continues\n" | tee -a ./log.txt
   done
-  printf -- "- $(date "+%H:%M:%S") Curl done\n" | tee -a ./log.txt
+  echo "-$(date "+%H:%M:%S") Curl done" | tee -a ./log.txt
 }
 
 
 rm ./log.txt | true
+kapp delete -a control-service -y
 
 for i in {0..100}; do
   set +x

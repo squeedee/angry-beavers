@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+rm ./log.txt | true
+
+kapp delete -a control-service -y || true
+kapp delete -a control-check -y || true
+
+for i in {0..100}; do
+  set +x
+  printf "$(date "+%H:%M:%S") ---- START ----\n" | tee -a ./log.txt
+  echo "$(date "+%H:%M:%S") Deploying service" | tee -a ./log.txt
+  kapp deploy -a control-service -f control/ -y 2>&1 >> ./log.txt
+
+  echo "+$(date "+%H:%M:%S") Deploying job" | tee -a ./log.txt
+  kapp deploy -a control-check -f control-check -y 2>&1 >> ./log.txt
+  echo "-$(date "+%H:%M:%S") Deployed job" | tee -a ./log.txt
+
+  echo "$(date "+%H:%M:%S") removing job" | tee -a ./log.txt
+  kapp delete -a control-check -y 2>&1 >> ./log.txt
+  echo "$(date "+%H:%M:%S") removing service" | tee -a ./log.txt
+  kapp delete -a control-service -y 2>&1 >> ./log.txt
+  printf "$(date "+%H:%M:%S") ---- END ----\n\n\n" | tee -a ./log.txt
+done
