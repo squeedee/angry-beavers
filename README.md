@@ -20,4 +20,14 @@ server observes the request. It finally logs:
 
 [run-local](./run-local) executes this scenario with a local curl and port forward. So far, *this does not* evidence the issue.
 
+# Run
+[run](./run) executes this scenario with a service and a job that calls the service.
+
+
+# Results
+
+* run-local == Direct
+* run == Service
+
+![chart.png](chart.png)
 
