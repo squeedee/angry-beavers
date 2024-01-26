@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+
+curlit() {
+  echo "+$(date "+%H:%M:%S") Curl begins" | tee -a ./log.txt
+  until curl -sL localhost:8089/info 2>&1 >> ./log.txt; do
+    sleep 1
+    printf "\n.$(date "+%H:%M:%S") Curl continues" | tee -a ./log.txt
+  done
+  printf "\n-$(date "+%H:%M:%S") Curl done" | tee -a ./log.txt
+}
+
+
+rm ./log.txt | true
+
+for i in {0..100}; do
+  set +x
+  printf "$(date "+%H:%M:%S") ---- START ----\n" | tee -a ./log.txt
+  echo "$(date "+%H:%M:%S") Deploying service" | tee -a ./log.txt
+  kapp deploy -a control-service -f control/ -y 2>&1 >> ./log.txt
+
+  echo "$(date "+%H:%M:%S") forwarding port" | tee -a ./log.txt
+  kubectl port-forward  svc/control 8089:80 2>&1 >> ./log.txt &
+  pf_pid=$!
+
+  curlit
+
+  echo "$(date "+%H:%M:%S") killing port forward" | tee -a ./log.txt
+  kill $pf_pid
+
+  echo "$(date "+%H:%M:%S") removing service" | tee -a ./log.txt
+  kapp delete -a control-service -y 2>&1 >> ./log.txt
+  printf "$(date "+%H:%M:%S") ---- END ----\n\n\n" | tee -a ./log.txt
+done
